@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pgbarman
-# Provider:: server
+# Provider:: bidirectional_ssh
 #
 # Author:: LLC Express 42 (info@express42.com)
 #
@@ -27,35 +27,32 @@
 
 use_inline_resources
 
-provides :pgbarman_server if defined? provides
+provides :pgbarman_bidirectional_ssh if defined? provides
 
 action :create do
-  user = node['pgbarman']['server']['global_configuration']['barman_user']
-  additional_parameters = Mash.new(new_resource.additional_parameters)
-  full_backup_time = new_resource.full_backup_time
+  user = new_resource.granted_user
+  authorized_keys = new_resource.ssh_public_keys.join("\n")
+  ssh_folder = new_resource.ssh_folder_path
 
-  template "#{node['pgbarman']['server']['servers_config_dir']}/#{new_resource.name}.conf" do
-    source 'server/server.conf.erb'
+  directory ssh_folder do
+    owner user
+    group user
+    mode '0755'
+  end
+
+  # Generate private key
+  file "#{ssh_folder}/id_rsa" do
+    content new_resource.ssh_private_key
+    owner user
+    group user
+    mode '0600'
+  end
+
+  # Generate authorized_keys
+  file "#{ssh_folder}/authorized_keys" do
+    content authorized_keys
     owner user
     group user
     mode '0644'
-    variables(
-      server_name: new_resource.name,
-      ssh_command: new_resource.ssh_command,
-      conninfo: new_resource.pg_conninfo,
-      retention_policy: new_resource.retention_policy,
-      additional_configuration: additional_parameters
-    )
-    cookbook 'pgbarman'
-  end
-
-  cron_d "barman_backup_for_#{new_resource.name}" do
-    command "barman backup #{new_resource.name}"
-    user user
-    minute full_backup_time[:minute]
-    hour full_backup_time[:hour]
-    day full_backup_time[:day]
-    month full_backup_time[:month]
-    weekday full_backup_time[:weekday]
   end
 end

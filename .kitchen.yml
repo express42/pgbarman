@@ -9,11 +9,10 @@ platforms:
   - name: ubuntu-14.04
     driver:
       box: express42/ubuntu-14.04
-      memory: 4096
-  - name: debian-7.6
 
 suites:
   - name: pgbarman
     run_list:
       - recipe[apt]
-      - recipe[bartender::testserver]
+      - recipe[bartender::test_server]
+      - recipe[bartender::test_ssh_access]

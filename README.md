@@ -52,6 +52,21 @@ pgbarman package at least 1.3.3 version
 - retention_policy: retention
 - additional_parameters: additional barman paramters, see ```man 5 barman``` for server configuration details
 
+## pgbarman\_bidirectional_ssh
+
+### Actions
+
+- create: creates private key and authorized_keys configuration  for bidirect ssh connections between barman and db servers
+
+### Attribute Parameters
+
+- name: name of barman server
+- granted_user: destination user, who receives private key for authentication and authorized_keys for connection
+- ssh_folder_path: path to ssh folder
+- ssh_private_key: private key to use for auth
+- ssh_public_keys: array of public keys from which allow to authenticate
+
+
 # Examples
 ```
 db_server = 'db01.example.org'
@@ -65,8 +80,35 @@ pgbarman_server db_server do
   )
 end
 ```
+lwrp examples to generate private key for barman and sets public key from db01/02 to allow bidirectional connect between servers
+
+```
+pgbarman_bidirectional_ssh 'barman' do
+  granted_user 'barman'
+  ssh_folder_path '/var/lib/barman/.ssh'
+  ssh_private_key 'barman_private_ssh_key'
+  ssh_public_keys ['public_db01_key', 'public_db02_key']
+end
+
+pgbarman_bidirectional_ssh 'db01' do
+  granted_user 'barman'
+  ssh_folder_path '/var/lib/barman/.ssh'
+  ssh_private_key 'db01_private_ssh_key'
+  ssh_public_keys ['public_barman_key']
+end
+
+
+pgbarman_bidirectional_ssh 'db02' do
+  granted_user 'barman'
+  ssh_folder_path '/var/lib/barman/.ssh'
+  ssh_private_key 'db02_private_ssh_key'
+  ssh_public_keys ['public_barman_key']
+end
+
+```
+You can find more examples in [tests](https://github.com/express42-cookbooks/pgbarman/tree/master/templates/default/server)
+
 # ToDo
-* ssh keys warehouse
 
 # License and Maintainer
 

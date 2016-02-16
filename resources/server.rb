@@ -36,3 +36,4 @@ attribute :ssh_command, kind_of: String, required: true
 attribute :pg_conninfo, kind_of: String, required: true
 attribute :retention_policy, kind_of: String, required: true
 attribute :additional_parameters, kind_of: Hash, default: {}
+attribute :full_backup_time, kind_of: Hash, default: { minute: '0', hour: '1', day: '*', month: '*', weekday: '*' }

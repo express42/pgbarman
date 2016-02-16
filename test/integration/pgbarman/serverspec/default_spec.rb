@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# pgbarman_server
 describe package('barman') do
   it { should be_installed }
 end
@@ -32,7 +33,7 @@ end
 
 describe file('/etc/barman.conf') do
   it { should be_file }
-  it { should contain 'barman_home = /var/lib/pgbarman' }
+  it { should contain 'barman_home = /var/lib/barman' }
   it { should contain 'barman_lock_directory = /var/run/barman' }
   it { should contain 'barman_user = barman' }
   it { should contain 'basebackup_retry_sleep = 30' }
@@ -44,4 +45,23 @@ describe file('/etc/barman.conf') do
   it { should contain 'retention_policy_mode = auto' }
   it { should contain 'reuse_backup = off' }
   it { should contain 'wal_retention_policy = main' }
+end
+
+describe file('/etc/cron.d/barman_backup_for_base_test') do
+  it { should contain '0 1 * * * barman barman backup base_test' }
+end
+
+# pgbarman_bidirectional_ssh
+describe file('/var/lib/barman/.ssh') do
+  it { should be_directory }
+end
+
+describe file('/var/lib/barman/.ssh/id_rsa') do
+  it { should be_file }
+  it { should contain 'MIIEogIBAAKCAQEAwKDNfKddfe+sddl1s86QAujg8ApzG5p01Ffziv3l0ZJh6kVK' }
+end
+
+describe file('/var/lib/barman/.ssh/authorized_keys') do
+  it { should be_file }
+  it { should contain 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC8bRGedn/WvTzNiYwMT' }
 end
