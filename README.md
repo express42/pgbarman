@@ -5,7 +5,7 @@ Generate configurations for db servers using lwrp
 
 # Requirements
 
-pgbarman package at least 1.3.3 version
+pgbarman package, at least 1.3.3 version
 
 ## Platform:
 
@@ -37,6 +37,7 @@ pgbarman package at least 1.3.3 version
 # Resources
 
 * [pgbarman_server](#pgbarman_server)
+* [pgbarman\_bidirectional_ssh](#pgbarman\_bidirectional_ssh)
 
 ## pgbarman_server
 

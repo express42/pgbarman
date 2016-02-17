@@ -38,7 +38,7 @@ action :create do
     source 'server/server.conf.erb'
     owner user
     group user
-    mode '0644'
+    mode '0640'
     variables(
       server_name: new_resource.name,
       ssh_command: new_resource.ssh_command,
