@@ -1,7 +1,8 @@
 # Base lwrp execution
 test_server = 'localhost'
 
-include_recipe 'pgbarman'
+include_recipe 'pgbarman::server'
+
 pgbarman_server 'base_test' do
   ssh_command "ssh postgres@#{test_server}"
   pg_conninfo "host=#{test_server} user=postgres"

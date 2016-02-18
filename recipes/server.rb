@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pgbarman
-# Recipe:: default
+# Recipe:: server
 #
 # Author:: LLC Express 42 (info@express42.com)
 #
@@ -24,3 +24,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+user = node['pgbarman']['server']['global_configuration']['barman_user']
+
+node['pgbarman']['packages'].each do |pkg|
+  package pkg
+end
+
+# Directories for pgbarman
+directory node['pgbarman']['server']['global_configuration']['barman_home'] do
+  user user
+  group user
+end
+
+directory node['pgbarman']['server']['servers_config_dir'] do
+  owner user
+  group user
+end
+
+directory node['pgbarman']['server']['global_configuration']['barman_lock_directory'] do
+  user user
+  group user
+end
+
+# Global config
+template '/etc/barman.conf' do
+  source 'server/global.conf.erb'
+  variables configuration: node['pgbarman']['server']['global_configuration']
+end
