@@ -31,7 +31,7 @@ node['pgbarman']['packages'].each do |pkg|
 end
 
 # Directories for pgbarman
-directory node['pgbarman']['server']['global_configuration']['barman_home'] do
+directory node['pgbarman']['server']['global_configuration']['barman_home'] do # ~FC005
   user user
   group user
 end
