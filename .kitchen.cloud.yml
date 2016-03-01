@@ -1,0 +1,24 @@
+---
+driver:
+  name: digitalocean
+
+driver_config:
+  private_networking: false
+  region: nyc3
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 12
+
+platforms:
+  - name: ubuntu-14-04-x64
+
+suites:
+  - name: pgbarman
+    run_list:
+      - recipe[apt]
+      - recipe[bartender::test_server]
+      - recipe[bartender::test_ssh_access]
+    provisioner:
+      name: chef_zero
+      require_chef_omnibus: 11.18.12
