@@ -1,7 +1,11 @@
-# Description
+[![Chef cookbook](https://img.shields.io/cookbook/v/pgbarman)](https://github.com/express42-cookbooks/pgbarman)
+[![Code Climate](https://codeclimate.com/github/express42-cookbooks/pgbarman/badges/gpa.svg)](https://codeclimate.com/github/express42-cookbooks/pgbarman)
+[![Build Status](https://travis-ci.org/express42-cookbooks/pgbarman.svg)](https://travis-ci.org/express42-cookbooks/pgbarman)
 
-Installs/Configures pgbarman global server
-Generate configurations for db servers using lwrp
+# Description
+Pgbarman cookbook for chef.
+Installs and configure pgbarman - backup and recovery manager for PostgreSQL
+
 
 # Requirements
 
