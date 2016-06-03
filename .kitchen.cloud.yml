@@ -1,20 +1,35 @@
 ---
 driver:
-  name: digitalocean
-
-driver_config:
-  private_networking: false
-  region: nyc3
-
-provisioner:
-  name: chef_zero
+  name: ec2
+  access_key_id: "<%= ENV['AWS_ACCESS_KEY_ID'] %>"
+  secret_access_key: "<%= ENV['AWS_SECRET_ACCESS_KEY'] %>"
+  aws_ssh_key_id: travis-ci-aws-frank
+  security_group_ids: ["sg-2dc50845"]
+  region: eu-central-1
   require_chef_omnibus: 12
+  instance_type: t2.micro
+  tags:
+    Name: travis-ci
+
+transport:
+  ssh_key: '.travis/travis-ci-aws-frank.pem'
+  connection_timeout: 10
+  connection_retries: 5
 
 platforms:
-  - name: ubuntu-14-04-x64
+  - name: ubuntu-14.04
+    driver:
+     image_id: ami-6bee0004
+    transport:
+      username: ubuntu
+  - name: ubuntu-16.04
+    driver:
+      image_id: ami-f9e30f96
+    transport:
+      username: ubuntu
 
 suites:
-  - name: pgbarman
+  - name: pgbarman-chef11
     run_list:
       - recipe[apt]
       - recipe[bartender::test_server]
@@ -22,3 +37,9 @@ suites:
     provisioner:
       name: chef_zero
       require_chef_omnibus: 11.18.12
+
+  - name: pgbarman
+    run_list:
+      - recipe[apt]
+      - recipe[bartender::test_server]
+      - recipe[bartender::test_ssh_access]
