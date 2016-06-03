@@ -13,10 +13,6 @@ describe command('/usr/bin/barman -q cron') do
   its(:exit_status) { should eq 0 }
 end
 
-describe file('/var/lib/barman/base_test_with_params') do
-  it { should be_directory }
-end
-
 describe file('/var/run/barman') do
   it { should be_directory }
 end
@@ -68,4 +64,8 @@ end
 describe file('/var/lib/barman/.ssh/authorized_keys') do
   it { should be_file }
   it { should contain 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC8bRGedn/WvTzNiYwMT' }
+end
+
+describe file('/var/lib/barman/base_test_with_params') do
+  it { should be_directory }
 end
