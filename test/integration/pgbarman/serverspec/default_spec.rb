@@ -9,6 +9,10 @@ describe file('/etc/barman.d') do
   it { should be_directory }
 end
 
+describe command('/usr/bin/barman -q cron') do
+  its(:exit_status) { should eq 0 }
+end
+
 describe file('/var/lib/barman/base_test_with_params') do
   it { should be_directory }
 end
