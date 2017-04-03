@@ -5,6 +5,7 @@ group :berks do
 end
 
 group :lint do
+  gem 'cookstyle'
   gem 'foodcritic'
   gem 'rubocop'
 end

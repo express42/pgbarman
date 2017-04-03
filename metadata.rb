@@ -7,6 +7,7 @@ license 'all_rights'
 description 'Installs/Configures pgbarman'
 long_description 'Installs/Configures pgbarman'
 version '1.0.0'
+chef_version '>= 12'
 
 depends 'cron'
 
