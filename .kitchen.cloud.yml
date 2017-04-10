@@ -29,15 +29,6 @@ platforms:
       username: ubuntu
 
 suites:
-  - name: pgbarman-chef11
-    run_list:
-      - recipe[apt]
-      - recipe[bartender::test_server]
-      - recipe[bartender::test_ssh_access]
-    provisioner:
-      name: chef_zero
-      require_chef_omnibus: 11.18.12
-
   - name: pgbarman
     run_list:
       - recipe[apt]
