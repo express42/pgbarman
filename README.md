@@ -1,6 +1,6 @@
-[![Chef cookbook](https://img.shields.io/cookbook/v/pgbarman.svg)](https://github.com/express42-cookbooks/pgbarman)
+[![Chef cookbook](https://img.shields.io/cookbook/v/pgbarman.svg)](https://github.com/express42/pgbarman)
 [![Code Climate](https://codeclimate.com/github/express42-cookbooks/pgbarman/badges/gpa.svg)](https://codeclimate.com/github/express42-cookbooks/pgbarman)
-[![Build Status](https://travis-ci.org/express42-cookbooks/pgbarman.svg)](https://travis-ci.org/express42-cookbooks/pgbarman)
+[![Build Status](https://travis-ci.org/express42/pgbarman.svg)](https://travis-ci.org/express42/pgbarman)
 
 # Description
 Pgbarman cookbook for chef.
