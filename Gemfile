@@ -10,6 +10,9 @@ group :lint do
   gem 'rubocop'
 end
 
+group :kitchen_docker do
+  gem 'kitchen-docker'
+end
 group :kitchen_common do
   gem 'test-kitchen'
 end

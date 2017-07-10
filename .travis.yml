@@ -1,18 +1,24 @@
+services:
+  - docker
+
 language: ruby
 cache: bundler
 sudo: false
 rvm:
 - 2.2.2
-bundler_args: "--without kitchen_vagrant"
-before_install:
+bundler_args: "--without kitchen_vagrant  --without kitchen-ec2"
+
+script:
+- bundle exec cookstyle
+- bundle exec foodcritic -f any .
+- bundle exec kitchen test ${OPERATING_SYSTEM} -d always
+
+before_deploy:
 - openssl aes-256-cbc -K $encrypted_a5285f517a90_key -iv $encrypted_a5285f517a90_iv
   -in .travis/secret_keys.tar.enc -out .travis/secret_keys.tar -d
 - tar xf .travis/secret_keys.tar -C .travis
 - mv .travis/travis_rsa ~/.ssh/id_rsa
-script:
-- bundle exec cookstyle
-- bundle exec foodcritic -f any .
-- bundle exec kitchen test -c 10 -d always
+
 deploy:
   edge: true
   provider: chef-supermarket
@@ -24,9 +30,13 @@ deploy:
     tags: true
 env:
   global:
-  - KITCHEN_YAML=.kitchen.cloud.yml
+  - KITCHEN_YAML=.kitchen.docker.yml
   - secure: cMdmuanZNYKOpAIeNW/pxRWxlNNPQ+yDKWnI+faEP83Uuz42xrV3YNmGRvw+dpD4mKwRy9acc9MH94aKouK9AsY2dBwBX8CNcLBA8BAEr19f12BzIzgB39BoiWQXr6h0usjxa8GtxPF/bXsqbEh9iceSpMi1lwb7rXzb+0UywcON+TDdOLWWIOd0lz2wMQ4W3I9P63O41pP4r2Yi7aV6iWCKmu3/V1ajBYlOUMrli4lGLZu2AjiWbDsUvJ7tDk1z//ICkUToiXgnDnej1LJmBA38iiME3VgjKu6q2U5t4mNoAFO1N/0gziIWShNJrpWAi41AQWLT57seTtQRwqwzuxVfpmRKzP/j7dsvqge+NvkN5JaGbqMi+i5u+Mkr1Bt2BBMaehboieLIMkOFzfTxK19wZMU6BiMBsayYqqmA4u8pRqON5r1S0465eW3Mbs5kuqfu0g2l53BQy/1uMuv1ZqQnCTDvDyZ/88WE9UP5JjUCFAhlCxMjCQ1JJ+a0jgwL+mrXouYJKzmHflvXIY3i4QezQSuJ9dn3I51NZRt2QTfYzPU12FLDJxXV/Sv3Zgyu5JChAWov8ZFBdY70sZFlgE4JXIDz+C5BQeLTo33YnTVk7T25gqK13+il82MDdpgkQkAKd/CMcJFplAux5+bE2r0lm87B6koJFygt7GkqFiE=
   - secure: aFO4pLpEsrT8M1eE137TbrIx/kfd0hW1c9vZIBacMTz0jqvFJldcbGyeeR943G/vC0GXEgBJhKsiNfDz1kYz9S3t6MLDyfDEf5j5XtB+t4WdWah/5Pvcz7A7e+TWjp9nfiAcI/8hbAXk4VBsr7pxKvxYFX10FztPo1zO0eHLpIA6+j2ZXqFbXhJHopXlAN2fuBlccddgeo0ubMW50hs6yHZDfYP1Dc9krBS3CAufU+8QvpdfMaQLdPKHHDsmYq6LyoPthLLUE0zgpipmdZG7MSqYoJNEE9c4YMBMh4P6Ry24gApBwgtFOEMCLO6KGqW2pFFZsIxSYhkhXSRRoB7dhX8ksYjmiqlUlIOlDenmXxEkUaOFb/3LsEaUrrTQCdQsZWHhGbMoDMN0Y3nhvQQqv6Sntblan7FAn5nDqwU1tBNl/nsfERQfz1f0AsgPqW4Wdap0rPxf0VaPTR26oV7Yk96JwF2yuc0uHn7JtftwsQCDUa6CS938fgA0bI9WTmOlMfbq+kkf+qx2g7x3tHiJw5CRkmQu4mTtHq46otSS/3HISZW2AeswhoxHAI09zZPMibE/jXlGzFgyPoZUcragZJkX+NUWK1gI10KR6GkISkUQjTPYTfYQM+9CtiHWCXpVIVRTAHTU+CDomuQqwYmMSW2I+VcmFQtuCN0N8jYvCSY=
+  matrix:
+  - OPERATING_SYSTEM=ubuntu-1404
+  - OPERATING_SYSTEM=ubuntu-1604
+
 notifications:
   slack:
     secure: a4uk+jhZPgxau0NCrAgAR2rFNKzCsiGoHlHlG1oHDbim5OIvD3tdjbiwJc+ZPEW4e6GkTESqrzPxOHIv9W3MyKvo68n5b+vjdsLxJJWtSmbJumcZb/Jejld3yExRjVtFzaFlC111cwcZHa30N2hnSfLD4yRQl2xkzoTHbq4Doo1Wz4jVnkRzKtLS/QIHRmoCM9rhP4QltKOVXkGePMg8nPJh/bVK2wh6OZ4UD1Bl13Iedmmz9jqXKZpka65f51BEx4gpp8+yxvH0fb8v7+LxsJc67ohIiUMomR0l0Ela5HU0JlwGOSkK/0P9pz4BgA0YTMleUrIjVO3uLZGinXVWNgB+AvC28jA75L3okQMR80iud5PXoOMJ60hPM/fCG/pvzTDqfVE8L3MSycHy1pTy2EAYglj9q/7FEGym7lCsHqw4aX/GN3uavwWbxyIDbmKTcht1Pabz+aX7VpZWeJ+6wgHYaj5mQPXAqrJTihJzAxVtuuXKTcOYgOLNqGAFb4QFVByGbVQQ8SlDJi8m6yI5+VkaFfmlyjX41MrS1k6fXDP6DxhQlB8y4EYf0G7zWJ3HtJE/pxwoK9JQ14gfUibDtEL83Nko6Z35jhH9Rprw9sGD694tCAmmTXs9Jg/YygnYEJKbpqgvYRYWolKitJj2OZ7ILxnk4V65X64eaX2yU6g=

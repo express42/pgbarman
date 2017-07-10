@@ -1,0 +1,36 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+  privileged: true
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 12
+
+platforms:
+  - name: ubuntu-14.04
+    driver_config:
+      image: ubuntu-upstart:14.04
+      disable_upstart: false
+      run_command: '/sbin/init'
+      provision_command:
+#       Netstat for Serverspec
+        - apt-get install -y net-tools
+
+  - name: ubuntu-16.04
+    driver_config:
+      image: ubuntu:16.04
+      run_command: '/sbin/init'
+      provision_command:
+#       For systemd
+        - systemctl set-default multi-user.target
+#       Netstat for Serverspec
+        - apt-get install -y net-tools
+
+suites:
+  - name: pgbarman
+    run_list:
+      - recipe[apt]
+      - recipe[bartender::test_server]
+      - recipe[bartender::test_ssh_access]
